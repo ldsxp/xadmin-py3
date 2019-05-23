@@ -45,3 +45,4 @@ xadmin/static/xadmin/bower_components/
 demo_app/data.db
 demo_app/static/
 *.swp
+demo_app/db.sqlite3
