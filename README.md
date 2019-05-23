@@ -39,13 +39,13 @@
 通过PyPI安装，请运行：
 
 ```
-pip install xadmin
+pip install xadmin-py3
 ```
 
 或从GitHub源安装：
 
 ```
-pip install git+git://github.com/sshwsfc/xadmin.git
+pip install git+git://github.com/ldsxp/xadmin-py3.git
 ```
 
 
