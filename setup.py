@@ -1,38 +1,42 @@
 #!/usr/bin/env python
-from io import open
 from setuptools import setup
+
 # version_tuple = __import__('xadmin').VERSION
 # version = ".".join([str(v) for v in version_tuple])
+version = '2.0.2'
 
 setup(
-    name='xadmin',
-    version='2.0.1',
-    description='Drop-in replacement of Django admin comes with lots of goodies, fully extensible with plugin support, pretty UI based on Twitter Bootstrap.',
-    long_description=open('README.rst', encoding='utf-8').read(),
+    name='xadmin-py3',
+    version=version,
+    description='直接替换Django管理员带来了许多好东西，完全可扩展的插件支持，基于Twitter Bootstrap的漂亮用户界面。',
+    long_description=open('README.md', encoding='utf-8').read(),
     author='sshwsfc',
     author_email='sshwsfc@gmail.com',
-    license=open('LICENSE', encoding='utf-8').read(),
-    url='http://www.xadmin.io',
-    download_url='http://github.com/sshwsfc/django-xadmin/archive/master.zip',
+    maintainer="lds",
+    maintainer_email="85176878@qq.com",
+    license='BSD',
+    url='https://github.com/ldsxp/xadmin-py3',
+    download_url='https://github.com/ldsxp/xadmin-py3/archive/master.zip',
     packages=['xadmin', 'xadmin.migrations', 'xadmin.plugins', 'xadmin.templatetags', 'xadmin.views'],
     include_package_data=True,
+    long_description_content_type='text/markdown',
     install_requires=[
         'setuptools',
-        'django>=2',
-        'django-crispy-forms>=1.6.0',
-        'django-reversion>=2.0.0',
-        'django-formtools>=1.0',
-        'django-import-export>=0.5.1',
-        'httplib2==0.9.2',
+        'django>=2.2',
+        'django-crispy-forms>=1.7.2',
+        'django-reversion>=3.0.0',
+        'django-formtools>=2.1',
+        'django-import-export>=1.2.0',
+        'httplib2==0.12.3',
         'future',
         'six'
     ],
     extras_require={
         'Excel': ['xlwt', 'xlsxwriter'],
-        'Reversion': ['django-reversion>=2.0.0'],
+        'Reversion': ['django-reversion>=3.0.0'],
     },
     zip_safe=False,
-    keywords=['admin', 'django', 'xadmin', 'bootstrap'],
+    keywords=['admin', 'django', 'xadmin', 'xadmin-py3', 'bootstrap'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Web Environment',
@@ -42,8 +46,7 @@ setup(
         'Operating System :: OS Independent',
         "Programming Language :: JavaScript",
         'Programming Language :: Python',
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.4",
+        "Programming Language :: Python :: 3.6",
         "Topic :: Internet :: WWW/HTTP",
         "Topic :: Internet :: WWW/HTTP :: Dynamic Content",
         "Topic :: Software Development :: Libraries :: Python Modules",
