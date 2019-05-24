@@ -53,12 +53,12 @@ API
 源码
 ----
 
-https://github.com/sshwsfc/django-xadmin
+https://github.com/ldsxp/xadmin-py3
 
 网站
 -------
 
-http://sshwsfc.github.com/django-xadmin
+https://github.com/ldsxp/xadmin-py3
 
 Versions and Compatibility
 --------------------------
