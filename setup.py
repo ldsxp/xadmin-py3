@@ -3,17 +3,17 @@ from setuptools import setup
 
 # version_tuple = __import__('xadmin').VERSION
 # version = ".".join([str(v) for v in version_tuple])
-version = '2.0.3'
+version = '2.0.4'
 
 setup(
     name='xadmin-py3',
     version=version,
     description='直接替换Django管理员带来了许多好东西，完全可扩展的插件支持，基于Twitter Bootstrap的漂亮用户界面。',
     long_description=open('README.md', encoding='utf-8').read(),
-    author='sshwsfc',
-    author_email='sshwsfc@gmail.com',
-    maintainer="lds",
-    maintainer_email="85176878@qq.com",
+    author='lds',
+    author_email='85176878@qq.com',
+    # maintainer="lds",
+    # maintainer_email="85176878@qq.com",
     license='BSD',
     url='https://github.com/ldsxp/xadmin-py3',
     download_url='https://github.com/ldsxp/xadmin-py3/archive/master.zip',
