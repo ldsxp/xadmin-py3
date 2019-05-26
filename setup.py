@@ -3,7 +3,7 @@ from setuptools import setup
 
 # version_tuple = __import__('xadmin').VERSION
 # version = ".".join([str(v) for v in version_tuple])
-version = '2.0.2'
+version = '2.0.3'
 
 setup(
     name='xadmin-py3',
