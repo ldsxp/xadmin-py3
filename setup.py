@@ -20,6 +20,7 @@ setup(
     packages=['xadmin', 'xadmin.migrations', 'xadmin.plugins', 'xadmin.templatetags', 'xadmin.views'],
     include_package_data=True,
     long_description_content_type='text/markdown',
+    platforms="any",
     install_requires=[
         'setuptools',
         'django>=2.2',
@@ -38,7 +39,7 @@ setup(
     zip_safe=False,
     keywords=['admin', 'django', 'xadmin', 'xadmin-py3', 'bootstrap'],
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Web Environment',
         'Framework :: Django',
         'Intended Audience :: Developers',
