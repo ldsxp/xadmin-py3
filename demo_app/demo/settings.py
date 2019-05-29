@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'xadmin',
+    # django-crispy-forms DRY表单
     'crispy_forms',
+    # django-reversion 版本控制
     'reversion',
 
     'app',
