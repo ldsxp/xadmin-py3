@@ -5,6 +5,7 @@ from .models import IDC, Host, MaintainLog, HostGroup, AccessRecord
 from xadmin.layout import Main, TabHolder, Tab, Fieldset, Row, Col, AppendedText, Side
 from xadmin.plugins.inline import Inline
 from xadmin.plugins.batch import BatchChangeAction
+from xadmin.filters import MultiSelectFieldListFilter
 
 
 @xadmin.sites.register(views.website.IndexView)
@@ -56,12 +57,12 @@ class IDCAdmin(object):
         ("Thread Form", ("customer_id",))
     ]
     search_fields = ["name", "description", "contact", "telphone", "address"]
+    # search_fields = ["name"]
     list_filter = [
         "name"
     ]
     list_quick_filter = [{"field": "name", "limit": 10}]
 
-    search_fields = ["name"]
     relfield_style = "fk-select"
     reversion_enable = True
 
@@ -93,7 +94,7 @@ class HostAdmin(object):
         "idc", "guarantee_date", "status", "brand", "model", "cpu", "core_num",
         "hard_disk", "memory", (
             "service_type",
-            xadmin.filters.MultiSelectFieldListFilter,
+            MultiSelectFieldListFilter,
         ),
     ]
 
