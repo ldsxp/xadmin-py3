@@ -2,7 +2,7 @@
 # from django.conf.urls import include, url
 from django.urls import include, path
 
-# Uncomment the next two lines to enable the admin:
+# 取消注释接下来的两行以启用管理员：
 import xadmin
 xadmin.autodiscover()
 
@@ -13,5 +13,6 @@ xversion.register_models()
 from django.contrib import admin
 
 urlpatterns = [
-    path(r'', xadmin.site.urls)
+    path(r'', xadmin.site.urls),
+    path(r'admin', admin.site.urls),
 ]
