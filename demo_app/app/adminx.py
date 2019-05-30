@@ -436,11 +436,11 @@ from django.contrib.auth.models import User
 from django.contrib.auth.models import Permission
 
 
-# 取消日志管理
-xadmin.sites.site.unregister(Log)
-# 取消 认证和授权 - 组
-xadmin.sites.site.unregister(Group)
-# 取消 认证和授权 - 用户
-xadmin.sites.site.unregister(User)
-# 取消 认证和授权 - 权限
-xadmin.sites.site.unregister(Permission)
+# # 取消日志管理
+# xadmin.sites.site.unregister(Log)
+# # 取消 认证和授权 - 组
+# xadmin.sites.site.unregister(Group)
+# # 取消 认证和授权 - 用户
+# xadmin.sites.site.unregister(User)
+# # 取消 认证和授权 - 权限
+# xadmin.sites.site.unregister(Permission)
