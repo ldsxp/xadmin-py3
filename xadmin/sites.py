@@ -212,6 +212,7 @@ class AdminSite(object):
             site.register(SomeModel, SomeModelAdmin)
 
         """
+        # print('打印注册的Model', model_or_iterable, object, **options)
         from xadmin.views.base import BaseAdminView
         if isinstance(model_or_iterable, ModelBase) or issubclass(model_or_iterable, BaseAdminView):
             model_or_iterable = [model_or_iterable]
