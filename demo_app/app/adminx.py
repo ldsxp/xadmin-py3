@@ -426,15 +426,16 @@ class AccessRecordAdmin(object):
     def _chart_month(self, obj):
         return obj.date.strftime("%B")
 
+
 # xadmin.sites.site.register(HostGroup, HostGroupAdmin)
 # xadmin.sites.site.register(MaintainLog, MaintainLogAdmin)
 # xadmin.sites.site.register(IDC, IDCAdmin)
 # xadmin.sites.site.register(AccessRecord, AccessRecordAdmin)
-from xadmin.models import Log
-from django.contrib.auth.models import Group
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Permission
 
+# from xadmin.models import Log
+# from django.contrib.auth.models import Group
+# from django.contrib.auth.models import User
+# from django.contrib.auth.models import Permission
 
 # # 取消日志管理
 # xadmin.sites.site.unregister(Log)
