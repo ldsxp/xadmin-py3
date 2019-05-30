@@ -38,7 +38,7 @@ class MainDashboard(object):
 @xadmin.sites.register(views.BaseAdminView)
 class BaseSetting(object):
     # 开启主题选择
-    enable_themes = False
+    enable_themes = True
     use_bootswatch = True
 
 
