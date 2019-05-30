@@ -16,6 +16,20 @@ from xadmin.views.base import ModelAdminView, filter_hook, csrf_protect_m
 
 
 class DeleteAdminView(ModelAdminView):
+    """
+    删除 Model 的 AdminView。主要用于删除数据
+
+    **Option属性**
+
+        .. autoattribute:: delete_confirmation_template
+
+    **实例属性**
+
+        .. attribute:: obj
+
+            即将被删除的对象
+    """
+    #: 删除时确认删除页面的模板名称
     delete_confirmation_template = None
 
     def __init__(self, request, *args, **kwargs):
@@ -26,19 +40,21 @@ class DeleteAdminView(ModelAdminView):
         super(DeleteAdminView, self).__init__(request, *args, **kwargs)
 
     def init_request(self, object_id, *args, **kwargs):
-        "The 'delete' admin view for this model."
+        """
+        初始化操作。根据传入的 ``object_id`` 取得要被删除的数据对象，而后进行权限判断
+        """
         self.obj = self.get_object(unquote(object_id))
 
         if not self.has_delete_permission(self.obj):
             raise PermissionDenied
 
         if self.obj is None:
-            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {'name': force_text(self.opts.verbose_name), 'key': escape(object_id)})
+            raise Http404(_('%(name)s object with primary key %(key)r does not exist.') % {
+                'name': force_text(self.opts.verbose_name), 'key': escape(object_id)})
 
-        using = router.db_for_write(self.model)
+        using = router.db_for_write(self.model)  # 取得所用db
 
-        # Populate deleted_objects, a data structure of all related objects that
-        # will also be deleted.
+        # 生成 deleted_objects, 存有所有即将被删除的关联数据
         if django_version > (2, 1):
             (self.deleted_objects, model_count, self.perms_needed, self.protected) = get_deleted_objects(
                 [self.obj], self.opts, self.admin_site)
@@ -66,6 +82,7 @@ class DeleteAdminView(ModelAdminView):
         response = self.post_response()
         cls_str = str if six.PY3 else basestring
         if isinstance(response, cls_str):
+            # 如果返回字符串，说明是一个url，跳转到该页面
             response = HttpResponseRedirect(response)
         return response
 
@@ -73,15 +90,29 @@ class DeleteAdminView(ModelAdminView):
     def delete_model(self):
         """
         Given a model instance delete it from the database.
+        删除 ``self.obj``
         """
         self.log('delete', '', self.obj)
         self.obj.delete()
 
     @filter_hook
     def get_context(self):
+        """
+        **Context Params**:
+
+            ``title`` : 确认删除的标题，如果您没有权限删除的话，会提示无法删除
+
+            ``object`` : 要被删除的对象
+
+            ``deleted_objects`` : 关联被删除的所有数据对象
+
+            ``perms_lacking`` : 缺少的权限
+
+            ``protected`` : 被保护的数据，无法被删除的数据对象
+        """
         if self.perms_needed or self.protected:
             title = _("Cannot delete %(name)s") % {"name":
-                                                   force_text(self.opts.verbose_name)}
+                                                       force_text(self.opts.verbose_name)}
         else:
             title = _("Are you sure?")
 
@@ -112,7 +143,9 @@ class DeleteAdminView(ModelAdminView):
 
     @filter_hook
     def post_response(self):
-
+        """
+        删除成功后的操作。首先提示用户信息，而后根据用户权限做跳转，如果用户有列表产看权限就跳转到列表页面，否则跳到网站首页。
+        """
         self.message_user(_('The %(name)s "%(obj)s" was deleted successfully.') %
                           {'name': force_text(self.opts.verbose_name), 'obj': force_text(self.obj)}, 'success')
 

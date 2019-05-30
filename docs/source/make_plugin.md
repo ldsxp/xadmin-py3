@@ -53,7 +53,18 @@ class ListAdminView(ModelAdminView):
 
 - `xadmin.views.base.``filter_hook`(*func*)[[source\]](_modules/xadmin/views/base.html#filter_hook)
 
-  表明 AdminView 的方法可以被插件插入的装饰器。执行使用了该装饰器的方法时，会按照以下过程执行:首先将实例的 plugins 属性取出，取出含有同样方法名的插件按照插件方法的 `priority` 属性排序顺序执行插件方法，执行插件方法的规则:如果插件方法没有参数，AdminView 方法的返回结果不为空则抛出异常如果插件方法的第一个参数为 `__` ，则 AdminView 方法将作为第一个参数传入，注意，这时还未执行该方法， 在插件中可以通过 `__()` 执行，这样就可以实现插件在 AdminView 方法执行前实现一些自己的逻辑，例如:`def get_context(self, __):     c = {'key': 'value'}     c.update(__())     return c `如果插件方法的第一个参数不为 `__` ，则执行 AdminView 方法，将结果作为第一个参数传入最终将插件顺序执行的结果返回
+  表明 AdminView 的方法可以被插件插入的装饰器。执行使用了该装饰器的方法时，会按照以下过程执行:
+  1. 首先将实例的 plugins 属性取出，取出含有同样方法名的插件
+  2. 按照插件方法的 `priority` 属性排序
+  3. 顺序执行插件方法，执行插件方法的规则:
+      1. 如果插件方法没有参数，AdminView 方法的返回结果不为空则抛出异常
+      2. 如果插件方法的第一个参数为 `__` ，则 AdminView 方法将作为第一个参数传入，注意，这时还未执行该方法， 在插件中可以通过 `__()` 执行，这样就可以实现插件在 AdminView 方法执行前实现一些自己的逻辑，例如:
+          `def get_context(self, __):     
+              c = {'key': 'value'}
+              c.update(__())
+              return c`
+      3. 如果插件方法的第一个参数不为 `__` ，则执行 AdminView 方法，将结果作为第一个参数传入
+  4. 最终将插件顺序执行的结果返回
 
 根据该装饰器的执行原则，如果我们想修改上面示例中 `ListAdminView` 的 `get_context` 的返回值，可以在插件中实现如下代码:
 
@@ -72,7 +83,7 @@ class HelloWorldPlugin(BaseAdminPlugin):
     # 第一个参数为 ``__`` 。这样 ``__`` 即为 ``ListAdminView`` 的 ``get_context`` 方法本身，注意，这时还没有执行这个方法。
     def get_context(self, __):
         context = {'hello_target': 'World!!'}
-        #我们可以在任何时候执行 ``AdminView`` 的方法，或是根本不执行
+        # 我们可以在任何时候执行 ``AdminView`` 的方法，或是根本不执行
         context.update(__())
         return context
 ```
@@ -175,7 +186,7 @@ Xadmin 在创建插件时会自动注入以下属性到插件实例中:
 > - model : Model 对象
 > - opts : Model 的 _meta 属性
 
-接下来您应该考虑打算制作什么功能的插件了。不同功能的插件额能需要注册到不同的 `AdminView`上，Xadmin 系统中 主要的 `AdminView` 有:
+接下来您应该考虑打算制作什么功能的插件了。不同功能的插件可能需要注册到不同的 `AdminView`上，Xadmin 系统中 主要的 `AdminView` 有:
 
 > - [`BaseAdminView`](views_api.html#xadmin.views.BaseAdminView) : 所有 `AdminView` 的基础类，注册在该 View 上的插件可以影响所有的 `AdminView`
 > - [`CommAdminView`](views_api.html#xadmin.views.CommAdminView) : 用户已经登陆后显示的 View，也是所有登陆后 View 的基础类。该 View主要作用是创建了 Xadmin 的通用元素，例如：系统菜单，用户信息等。插件可以通过注册该 View 来修改这些信息。
@@ -187,7 +198,7 @@ Xadmin 在创建插件时会自动注入以下属性到插件实例中:
 > - [`DeleteAdminView`](views_api.html#xadmin.views.DeleteAdminView) : Model 删除页面 View。
 > - [`DetailAdminView`](views_api.html#xadmin.views.DetailAdminView) : Model 详情页面 View。
 
-选择好目标 `AdminView` 后就要在自己的插件中编写方法来修改或增强这些 `AdminView` 。其中每个 `AdminView` 可以 拦截的方法及其介绍请参看各 `AdminView` 的文档。
+选择好目标 `AdminView` 后就要在自己的插件中编写方法来修改或增强这些 `AdminView` 。其中每个 `AdminView` 可以拦截的方法及其介绍请参看各 `AdminView` 的文档。
 
 ## 插件规范
 

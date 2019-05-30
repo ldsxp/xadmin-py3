@@ -1,8 +1,3 @@
-'''
-Created on Mar 26, 2014
-
-@author: LAB_ADM
-'''
 from future.utils import iteritems
 from django.utils import six
 from django.utils.translation import ugettext_lazy as _
@@ -23,7 +18,7 @@ class QuickFilterMultiSelectFieldListFilter(MultiSelectFieldListFilter):
 
 
 class QuickFilterPlugin(BaseAdminPlugin):
-    """ Add a filter menu to the left column of the page """
+    """ 将过滤器菜单添加到页面的左列 """
     list_quick_filter = ()  # these must be a subset of list_filter to work
     quickfilter = {}
     search_fields = ()
@@ -42,6 +37,7 @@ class QuickFilterPlugin(BaseAdminPlugin):
         # Check FKey lookups that are allowed, so that popups produced by
         # ForeignKeyRawIdWidget, on the basis of ForeignKey.limit_choices_to,
         # are allowed to work.
+        # 检查允许的FKey查找，以便允许ForeignKeyRawIdWidget根据ForeignKey.limit_choices_to生成的弹出窗口工作。
         for l in model._meta.related_fkey_lookups:
             for k, v in widgets.url_params_from_lookup_dict(l).items():
                 if k == lookup and v == value:
@@ -49,24 +45,25 @@ class QuickFilterPlugin(BaseAdminPlugin):
 
         parts = lookup.split(LOOKUP_SEP)
 
-        # Last term in lookup is a query term (__exact, __startswith etc)
-        # This term can be ignored.
+        # 查找中的最后一个术语是查询术语（__exact，__ startswith等）此术语可以忽略。
         if len(parts) > 1 and parts[-1] in QUERY_TERMS:
+            # print('QuickFilterPlugin parts.pop', parts.pop())
             parts.pop()
 
         # Special case -- foo__id__exact and foo__id queries are implied
         # if foo has been specificially included in the lookup list; so
         # drop __id if it is the last part. However, first we need to find
         # the pk attribute name.
+        # 特殊情况 - 如果foo已特别包含在查找列表中，则隐含 foo__id__exact 和 foo__id 查询;
+        # 如果它是最后一部分，请删除 __id。 但是，首先我们需要找到pk属性名称。
         rel_name = None
         for part in parts[:-1]:
             try:
                 field = model._meta.get_field(part)
             except FieldDoesNotExist:
-                # Lookups on non-existants fields are ok, since they're ignored
-                # later.
+                # 对非存在字段的查找是可以的，因为它们稍后会被忽略。
                 return True
-            if hasattr(field, 'remote_field'):
+            if hasattr(field, 'remote_field') and field.remote_field:
                 model = field.remote_field.model
                 rel_name = field.remote_field.get_related_field().name
             elif is_related_field(field):
@@ -83,7 +80,8 @@ class QuickFilterPlugin(BaseAdminPlugin):
         return clean_lookup in self.list_quick_filter
 
     def get_list_queryset(self, queryset):
-        lookup_params = dict([(smart_str(k)[len(FILTER_PREFIX):], v) for k, v in self.admin_view.params.items() if smart_str(k).startswith(FILTER_PREFIX) and v != ''])
+        lookup_params = dict([(smart_str(k)[len(FILTER_PREFIX):], v) for k, v in self.admin_view.params.items() if
+                              smart_str(k).startswith(FILTER_PREFIX) and v != ''])
         for p_key, p_val in iteritems(lookup_params):
             if p_val == "False":
                 lookup_params[p_key] = False
@@ -94,9 +92,10 @@ class QuickFilterPlugin(BaseAdminPlugin):
 
         # for clean filters
         self.admin_view.quickfilter['has_query_param'] = bool(lookup_params)
-        self.admin_view.quickfilter['clean_query_url'] = self.admin_view.get_query_string(remove=[k for k in self.request.GET.keys() if k.startswith(FILTER_PREFIX)])
+        self.admin_view.quickfilter['clean_query_url'] = self.admin_view.get_query_string(
+            remove=[k for k in self.request.GET.keys() if k.startswith(FILTER_PREFIX)])
 
-        # Normalize the types of keys
+        # 规范化键的类型
         if not self.free_query_filter:
             for key, value in lookup_params.items():
                 if not self.lookup_allowed(key, value):
@@ -130,8 +129,10 @@ class QuickFilterPlugin(BaseAdminPlugin):
                     field_path = field
                     field_parts = get_fields_from_path(self.model, field_path)
                     field = field_parts[-1]
-                spec = QuickFilterMultiSelectFieldListFilter(field, self.request, lookup_params, self.model, self.admin_view, field_path=field_path,
-                                                             field_order_by=field_order_by, field_limit=field_limit, sort_key=sort_key, cache_config=cache_config)
+                spec = QuickFilterMultiSelectFieldListFilter(field, self.request, lookup_params, self.model,
+                                                             self.admin_view, field_path=field_path,
+                                                             field_order_by=field_order_by, field_limit=field_limit,
+                                                             sort_key=sort_key, cache_config=cache_config)
 
                 if len(field_parts) > 1:
                     spec.title = "%s %s" % (field_parts[-2].name, spec.title)
@@ -164,5 +165,6 @@ class QuickFilterPlugin(BaseAdminPlugin):
     def block_left_navbar(self, context, nodes):
         nodes.append(loader.render_to_string('xadmin/blocks/modal_list.left_navbar.quickfilter.html',
                                              get_context_dict(context)))
+
 
 site.register_plugin(QuickFilterPlugin, ListAdminView)

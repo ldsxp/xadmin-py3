@@ -1,3 +1,55 @@
+"""
+数据过滤器
+==========
+
+功能
+----
+
+在数据列表页面提供数据过滤功能, 包括: 模糊搜索, 数字范围搜索, 日期搜索等等
+
+截图
+----
+
+.. image:: /images/plugins/filter.png
+
+使用
+----
+
+在 Model OptionClass 中设置以下属性:
+
+    * ``list_filter`` 属性:
+
+        该属性指定可以过滤的列的名字, 系统会自动生成搜索器
+
+    * ``search_fields`` 属性:
+
+        属性指定可以通过搜索框搜索的数据列的名字, 搜索框搜索使用的是模糊查找的方式, 一般用来搜素名字等字符串字段
+
+    * ``free_query_filter`` 属性:
+
+        默认为 ``True`` , 指定是否可以自由搜索. 如果开启自有搜索, 用户可以通过 url 参数来进行特定的搜索, 例如::
+
+            http://xxx.com/xadmin/auth/user/?name__contains=tony
+
+使用过滤器的例子::
+
+    class UserAdmin(object):
+        list_filter = ('is_staff', 'is_superuser', 'is_active')
+        search_fields = ('username', 'first_name', 'last_name', 'email')
+
+版本
+----
+
+暂无
+
+制作过滤器
+-----------
+
+您也可以制作自己的过滤器, 用来进行一些特定的过滤. 过滤器需要继承 :class:`xadmin.filters.BaseFilter` 类,
+并使用 :attr:`xadmin.filters.manager` 注册过滤器.
+
+"""
+
 import operator
 from future.utils import iteritems
 from xadmin import widgets
@@ -20,6 +72,14 @@ from xadmin.sites import site
 from xadmin.views import BaseAdminPlugin, ListAdminView
 from xadmin.util import is_related_field
 from functools import reduce
+
+# 有效的查询类型（一组用于快速查找）。 这些（目前）被认为是特定于SQL的; 其他存储系统可以选择使用不同的查找类型。
+QUERY_TERMS = {
+    'exact', 'iexact', 'contains', 'icontains', 'gt', 'gte', 'lt', 'lte', 'in',
+    'startswith', 'istartswith', 'endswith', 'iendswith', 'range', 'year',
+    'month', 'day', 'week_day', 'hour', 'minute', 'second', 'isnull', 'search',
+    'regex', 'iregex',
+}
 
 
 class IncorrectLookupParameters(Exception):
@@ -60,7 +120,7 @@ class FilterPlugin(BaseAdminPlugin):
                 # Lookups on non-existants fields are ok, since they're ignored
                 # later.
                 return True
-            if hasattr(field, 'remote_field'):
+            if hasattr(field, 'remote_field') and field.remote_field:
                 model = field.remote_field.to
                 rel_name = field.remote_field.get_related_field().name
             elif is_related_field(field):
@@ -90,6 +150,7 @@ class FilterPlugin(BaseAdminPlugin):
                                                                                    k.startswith(FILTER_PREFIX)])
 
         # Normalize the types of keys
+        # 规范化键的类型
         if not self.free_query_filter:
             for key, value in lookup_params.items():
                 if not self.lookup_allowed(key, value):
@@ -151,7 +212,7 @@ class FilterPlugin(BaseAdminPlugin):
         try:
             for key, value in lookup_params.items():
                 use_distinct = (
-                    use_distinct or lookup_needs_distinct(self.opts, key))
+                        use_distinct or lookup_needs_distinct(self.opts, key))
         except FieldDoesNotExist as e:
             raise IncorrectLookupParameters(e)
 

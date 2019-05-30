@@ -10,7 +10,7 @@ pip install xadmin-py3
 
 ## 运行演示
 
-如果已下载Xadmin的源tarball，则可以`demo_app`在项目层次结构中找到目录。可以发出以下命令以快速创建Xadmin的演示实例：
+如果已下载或克隆[xadmin-py3](https://github.com/ldsxp/xadmin-py3)源码，则可以进入`demo_app`目录，运行演示实例：
 
 ```
 cd demo_app
@@ -21,37 +21,47 @@ python manage.py runserver
 
 ## 使用现有项目
 
-首先，编辑你的`settings.py`Xadmin添加到你的`INSTALLED_APPS`。
+首先，编辑`settings.py`，添加 Xadmin 到`INSTALLED_APPS`。
 
 ```python
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     ...
 
     'xadmin',
+    # django-crispy-forms DRY表单
     'crispy_forms',
-    # 'reversion',
+    # django-reversion 版本控制
+    'reversion',
 
     ...
-)
+]
 ```
 
 然后添加URL模式并执行`autodiscover`：
 
 ```python
-# -*- coding: utf-8 -*-
+from django.urls import path
+from django.contrib import admin
+
+# 取消注释接下来的两行以启用管理员：
 import xadmin
 xadmin.autodiscover()
 
-# version 模块自动注册需要版本控制的 Model
+# version模块自动注册需要版本控制的 Model
 from xadmin.plugins import xversion
 xversion.register_models()
 
-urlpatterns = patterns('',
-    url(r'xadmin/', include(xadmin.site.urls)),
-)
+
+urlpatterns = [
+    path(r'admin', admin.site.urls),
+]
+
+urlpatterns += [
+    path(r'', xadmin.site.urls),
+]
 ```
 
-收集静态资源（假设到服务器才需要）：
+收集静态资源（安装在服务器才需要）：
 
 ```
 python manage.py collectstatic

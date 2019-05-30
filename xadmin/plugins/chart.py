@@ -1,3 +1,49 @@
+"""
+图表插件
+=========
+
+功能
+----
+
+在数据列表页面, 跟列表数据生成图表. 可以指定多个数据列, 生成多个图表.
+
+截图
+----
+
+.. image:: /images/plugins/chart.png
+
+使用
+----
+
+在 Model OptionClass 中设定 ``data_charts`` 属性, 该属性为 dict 类型, key 是图表的标示名称, value 是图表的具体设置属性. 使用示例::
+
+    class RecordAdmin(object):
+        data_charts = {
+            "user_count": {'title': u"User Report", "x-field": "date", "y-field": ("user_count", "view_count"), "order": ('date',)},
+            "avg_count": {'title': u"Avg Report", "x-field": "date", "y-field": ('avg_count',), "order": ('date',)}
+        }
+
+图表的主要属性为:
+
+    ``title`` : 图表的显示名称
+
+    ``x-field`` : 图表的 X 轴数据列, 一般是日期, 时间等
+
+    ``y-field`` : 图表的 Y 轴数据列, 该项是一个 list, 可以同时设定多个列, 这样多个列的数据会在同一个图表中显示
+
+    ``order`` : 排序信息, 如果不写则使用数据列表的排序
+
+版本
+----
+
+暂无
+
+API
+---
+.. autoclass:: ChartsPlugin
+.. autoclass:: ChartsView
+
+"""
 
 import calendar
 import datetime
@@ -51,14 +97,15 @@ class ChartWidget(ModelBaseWidget):
 
     def filte_choices_model(self, model, modeladmin):
         return bool(getattr(modeladmin, 'data_charts', None)) and \
-            super(ChartWidget, self).filte_choices_model(model, modeladmin)
+               super(ChartWidget, self).filte_choices_model(model, modeladmin)
 
     def get_chart_url(self, name, v):
         return self.model_admin_url('chart', name) + "?" + urlencode(self.list_params)
 
     def context(self, context):
         context.update({
-            'charts': [{"name": name, "title": v['title'], 'url': self.get_chart_url(name, v)} for name, v in self.charts.items()],
+            'charts': [{"name": name, "title": v['title'], 'url': self.get_chart_url(name, v)} for name, v in
+                       self.charts.items()],
         })
 
     # Media
@@ -80,7 +127,6 @@ class JSONEncoder(DjangoJSONEncoder):
 
 
 class ChartsPlugin(BaseAdminPlugin):
-
     data_charts = {}
 
     def init_request(self, *args, **kwargs):
@@ -96,14 +142,14 @@ class ChartsPlugin(BaseAdminPlugin):
     # Block Views
     def block_results_top(self, context, nodes):
         context.update({
-            'charts': [{"name": name, "title": v['title'], 'url': self.get_chart_url(name, v)} for name, v in self.data_charts.items()],
+            'charts': [{"name": name, "title": v['title'], 'url': self.get_chart_url(name, v)} for name, v in
+                       self.data_charts.items()],
         })
         nodes.append(loader.render_to_string('xadmin/blocks/model_list.results_top.charts.html',
                                              context=get_context_dict(context)))
 
 
 class ChartsView(ListAdminView):
-
     data_charts = {}
 
     def get_ordering(self):
@@ -123,7 +169,7 @@ class ChartsView(ListAdminView):
         self.y_fields = (
             y_fields,) if type(y_fields) not in (list, tuple) else y_fields
 
-        datas = [{"data":[], "label": force_text(label_for_field(
+        datas = [{"data": [], "label": force_text(label_for_field(
             i, self.model, model_admin=self))} for i in self.y_fields]
 
         self.make_result_list()
@@ -155,6 +201,7 @@ class ChartsView(ListAdminView):
         result = json.dumps(content, cls=JSONEncoder, ensure_ascii=False)
 
         return HttpResponse(result)
+
 
 site.register_plugin(ChartsPlugin, ListAdminView)
 site.register_modelview(r'^chart/(.+)/$', ChartsView, name='%s_%s_chart')

@@ -1,3 +1,28 @@
+"""
+数据即时编辑
+============
+
+功能
+----
+
+该插件可以在列表页中即时编辑某字段的值, 使用 Ajax 技术, 无需提交或刷新页面即可完成数据的修改, 对于需要频繁修改的字段(如: 状态)相当有用.
+
+截图
+----
+
+.. image:: /images/plugins/editable.png
+
+使用
+----
+
+使用该插件主要设置 OptionClass 的 ``list_editable`` 属性. ``list_editable`` 属性设置哪些字段需要即时修改功能. 示例如下::
+
+    class MyModelAdmin(object):
+
+        list_editable = ['price', 'status', ...]
+
+"""
+
 from django import template
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import models, transaction
@@ -19,7 +44,6 @@ from xadmin.layout import FormHelper
 
 
 class EditablePlugin(BaseAdminPlugin):
-
     list_editable = []
 
     def __init__(self, admin_view):
@@ -42,9 +66,10 @@ class EditablePlugin(BaseAdminPlugin):
 
             item.wraps.insert(0, '<span class="editable-field">%s</span>')
             item.btns.append((
-                '<a class="editable-handler" title="%s" data-editable-field="%s" data-editable-loadurl="%s">' +
-                '<i class="fa fa-edit"></i></a>') %
-                (_(u"Enter %s") % field_label, field_name, self.admin_view.model_admin_url('patch', pk) + '?fields=' + field_name))
+                                     '<a class="editable-handler" title="%s" data-editable-field="%s" data-editable-loadurl="%s">' +
+                                     '<i class="fa fa-edit"></i></a>') %
+                             (_(u"Enter %s") % field_label, field_name,
+                              self.admin_view.model_admin_url('patch', pk) + '?fields=' + field_name))
 
             if field_name not in self.editable_need_fields:
                 self.editable_need_fields[field_name] = item.field
@@ -58,9 +83,9 @@ class EditablePlugin(BaseAdminPlugin):
                 m = self.model_form.media
             except:
                 m = Media()
-            media = media + m +\
-                self.vendor(
-                    'xadmin.plugin.editable.js', 'xadmin.widget.editable.css')
+            media = media + m + \
+                    self.vendor(
+                        'xadmin.plugin.editable.js', 'xadmin.widget.editable.css')
         return media
 
 
@@ -81,7 +106,7 @@ class EditPatchView(ModelFormAdminView, ListAdminView):
 
     def get_new_field_html(self, f):
         result = self.result_item(self.org_obj, f, {'is_display_first':
-                                                    False, 'object': self.org_obj})
+                                                        False, 'object': self.org_obj})
         return mark_safe(result.text) if result.allow_tags else conditional_escape(result.text)
 
     def _get_new_field_html(self, field_name):

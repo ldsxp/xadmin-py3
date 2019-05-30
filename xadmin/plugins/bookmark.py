@@ -1,3 +1,46 @@
+"""
+书签
+======
+
+功能
+----
+
+记录数据列表页面特定的数据过滤, 排序等结果. 添加的书签还可以在首页仪表盘中作为小组件添加
+
+截图
+----
+
+.. image:: /images/plugins/bookmark.png
+
+使用
+----
+
+在 Model OptionClass 中设定如下属性:
+
+    * ``show_bookmarks`` 属性:
+
+        设置是否开启书签功能, 默认为 ``True``
+
+    * ``list_bookmarks`` 属性:
+
+        设置默认的书签. 用户可以在列表页面添加自己的书签, 你也可以实现设定好一些书签, 使用实例如下::
+
+            class UserAdmin(object):
+                list_bookmarks = [{
+                    'title': "Female",         # 书签的名称, 显示在书签菜单中
+                    'query': {'gender': True}, # 过滤参数, 是标准的 queryset 过滤
+                    'order': ('-age'),         # 排序参数
+                    'cols': ('first_name', 'age', 'phones'),  # 显示的列
+                    'search': 'Tom'    # 搜索参数, 指定搜索的内容
+                    }, {...}
+                ]
+
+版本
+----
+
+暂无
+
+"""
 
 from django.contrib.contenttypes.models import ContentType
 from django.urls.base import reverse
@@ -25,7 +68,6 @@ csrf_protect_m = method_decorator(csrf_protect)
 
 
 class BookmarkPlugin(BaseAdminPlugin):
-
     # [{'title': "Female", 'query': {'gender': True}, 'order': ('-age'), 'cols': ('first_name', 'age', 'phones'), 'search': 'Tom'}]
     list_bookmarks = []
     show_bookmarks = True
@@ -46,9 +88,9 @@ class BookmarkPlugin(BaseAdminPlugin):
             '%s=%s' % (k, v)
             for k, v in sorted(filter(
                 lambda i: bool(i[1] and (
-                    i[0] in (COL_LIST_VAR, ORDER_VAR, SEARCH_VAR)
-                    or i[0].startswith(FILTER_PREFIX)
-                    or i[0].startswith(RELATE_PREFIX)
+                        i[0] in (COL_LIST_VAR, ORDER_VAR, SEARCH_VAR)
+                        or i[0].startswith(FILTER_PREFIX)
+                        or i[0].startswith(RELATE_PREFIX)
                 )),
                 self.request.GET.items()
             ))
@@ -76,9 +118,10 @@ class BookmarkPlugin(BaseAdminPlugin):
 
             def check_item(i):
                 return bool(i[1]) or i[1] == False
+
             bk_qs = '&'.join([
-                    '%s=%s' % (k, v)
-                    for k, v in sorted(filter(check_item, params.items()))
+                '%s=%s' % (k, v)
+                for k, v in sorted(filter(check_item, params.items()))
             ])
 
             url = list_base_url + '?' + bk_qs
@@ -106,8 +149,8 @@ class BookmarkPlugin(BaseAdminPlugin):
                 change_or_detail = 'detail'
 
             bookmarks.append({'title': bk.title, 'selected': selected, 'url': bk.url, 'edit_url':
-                              reverse('xadmin:%s_%s_%s' % (bk_model_info[0], bk_model_info[1], change_or_detail),
-                                      args=(bk.id,))})
+                reverse('xadmin:%s_%s_%s' % (bk_model_info[0], bk_model_info[1], change_or_detail),
+                        args=(bk.id,))})
             if selected:
                 menu_title = bk.title
                 has_selected = True
@@ -157,7 +200,6 @@ class BookmarkView(ModelAdminView):
 
 
 class BookmarkAdmin(object):
-
     model_icon = 'fa fa-book'
     list_display = ('title', 'user', 'url_name', 'query')
     list_display_links = ('title',)
@@ -230,6 +272,7 @@ class BookmarkWidget(PartialBaseWidget):
         ]
         context['result_count'] = list_view.result_count
         context['page_url'] = self.bookmark.url
+
 
 site.register(Bookmark, BookmarkAdmin)
 site.register_plugin(BookmarkPlugin, ListAdminView)

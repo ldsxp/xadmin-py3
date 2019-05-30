@@ -1,4 +1,30 @@
-# coding=utf-8
+"""
+列表定时刷新
+============
+
+功能
+----
+
+该插件在数据列表页面提供了定时刷新功能, 对于需要实时刷新列表页面查看即时数据的情况非常有用.
+
+截图
+----
+
+.. image:: /images/plugins/refresh.png
+
+使用
+----
+
+使用数据刷新插件非常简单, 设置 OptionClass 的 ``refresh_times`` 属性即可. ``refresh_times`` 属性是存有刷新时间的数组. xadmin 默认不开启该插件.
+示例如下::
+
+    class MyModelAdmin(object):
+
+        # 这会显示一个下拉列表, 用户可以选择3秒或5秒刷新一次页面.
+        refresh_times = (3, 5)
+
+"""
+
 from django.template import loader
 
 from xadmin.plugins.utils import get_context_dict
@@ -9,7 +35,6 @@ REFRESH_VAR = '_refresh'
 
 
 class RefreshPlugin(BaseAdminPlugin):
-
     refresh_times = []
 
     # Media

@@ -1,3 +1,14 @@
+"""
+.. automodule:: xadmin.plugins.actions
+.. automodule:: xadmin.plugins.filters
+.. automodule:: xadmin.plugins.chart
+.. automodule:: xadmin.plugins.bookmark
+.. automodule:: xadmin.plugins.export
+.. automodule:: xadmin.plugins.refresh
+.. automodule:: xadmin.plugins.sortable
+.. automodule:: xadmin.plugins.details
+.. automodule:: xadmin.plugins.editable
+"""
 
 PLUGINS = (
     'actions',
