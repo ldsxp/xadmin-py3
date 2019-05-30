@@ -48,7 +48,7 @@ INSTALLED_APPS = [
     # django-reversion 版本控制
     'reversion',
 
-    'app',
+    'app.apps.DemoAppConfig',
 ]
 
 MIDDLEWARE = [
