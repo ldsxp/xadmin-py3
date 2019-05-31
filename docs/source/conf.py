@@ -42,13 +42,13 @@ source_suffix = ['.rst', '.md']
 
 from recommonmark.transform import AutoStructify
 
-github_doc_root = 'https://github.com/recommonmark/tree/master/docs/'
+github_doc_root = 'https://github.com/ldsxp/xadmin-py3/tree/master/docs/'
 
 # app setup hook
 def setup(app):
-    app.add_config_value('recommonmark_config', {
+    app.add_config_value('xadmin_config', {
         'url_resolver': lambda url: github_doc_root + url,  # 将文档中现有相对位置映射到http链接的函数
-        'auto_toc_tree_section': 'Contents',  # 当为True时，仅在与标题匹配的部分启用Auto Toc Tree
+        # 'auto_toc_tree_section': 'Contents',  # 当为True时，仅在与标题匹配的部分启用Auto Toc Tree
         # 'enable_eval_rst': True,  # 启用评估嵌入式reStructuredText功能
         # 'enable_auto_doc_ref': True,  # 启用Auto Doc Ref功能。弃用
     }, True)
