@@ -130,3 +130,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# 翻译文件所在目录
+LOCALE_PATHS = (
+    os.path.join(os.path.dirname(BASE_DIR), 'xadmin', 'locale'),
+)
+# print(LOCALE_PATHS)
+
+# 生成需要翻译的文件
+# python manage.py makemessages -l zh_Hans
+# 编译翻译
+# python manage.py compilemessages -l zh_Hans
