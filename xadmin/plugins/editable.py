@@ -26,6 +26,7 @@
 from django import template
 from django.core.exceptions import PermissionDenied, ObjectDoesNotExist
 from django.db import models, transaction
+from django import forms
 from django.forms.models import modelform_factory
 from django.forms import Media
 from django.http import Http404, HttpResponse
@@ -93,6 +94,9 @@ class EditPatchView(ModelFormAdminView, ListAdminView):
 
     def init_request(self, object_id, *args, **kwargs):
         self.org_obj = self.get_object(unquote(object_id))
+
+        # 因为自定义的表单在这里也无效，但会影响编辑字段，我们用默认代替自定义
+        self.form = forms.ModelForm
 
         # For list view get new field display html
         self.pk_attname = self.opts.pk.attname
