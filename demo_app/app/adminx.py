@@ -1,6 +1,7 @@
 from __future__ import absolute_import
 import xadmin
 from xadmin import views
+from xadmin.models import UserWidget
 from .models import IDC, Host, MaintainLog, HostGroup, AccessRecord
 from xadmin.layout import Main, TabHolder, Tab, Fieldset, Row, Col, AppendedText, Side
 from xadmin.plugins.inline import Inline
@@ -17,20 +18,21 @@ class MainDashboard(object):
     widgets = [
         [
             # 定义 html 内容
-            {'type': 'html', 'title': '主页 Widget',
-             'content': '<h3> Welcome to Xadmin! </h3><p>Github: https://github.com/ldsxp/xadmin-py3</p>'},
+            {"type": "html", "title": "主页 Widget",
+             "content": "<h3> Welcome to Xadmin! </h3><p>Github: https://github.com/ldsxp/xadmin-py3</p>"},
             # 定义图表
-            {'type': 'chart', 'model': 'app.accessrecord', 'chart': 'user_count',
-             'params': {'_p_date__gte': '2013-01-08', 'p': 1, '_p_date__lt': '2013-01-29'}},
+            {"type": "chart", "model": "app.accessrecord", "chart": "user_count",
+             "params": {"_p_date__gte": "2013-01-08", "p": 1, "_p_date__lt": "2013-01-29"}},
             # 显示模型内容
-            {'type': 'list', 'model': 'app.host', 'params': {'o': '-guarantee_date'}},
+            {"type": "list", "model": "app.host", "params": {"o": "-guarantee_date", "_p_name__contains": "显示"}},
         ],
         [
             # 定义按钮
-            {'type': 'qbutton', 'title': '快速开始',
-             'btns': [{'model': Host}, {'model': IDC}, {'title': 'Google', 'url': 'http://www.google.com'}]},
+            {"type": "qbutton", "title": "快速开始",
+             "btns": [{"model": UserWidget}, {"model": Host}, {"model": IDC},
+                      {"title": "Google", "url": "http://www.google.com"}]},
             # 定义 添加内容表单
-            {'type': 'addform', 'model': MaintainLog},
+            {"type": "addform", "model": MaintainLog},
         ]
     ]
 
@@ -425,7 +427,6 @@ class AccessRecordAdmin(object):
 
     def _chart_month(self, obj):
         return obj.date.strftime("%B")
-
 
 # xadmin.sites.site.register(HostGroup, HostGroupAdmin)
 # xadmin.sites.site.register(MaintainLog, MaintainLogAdmin)
